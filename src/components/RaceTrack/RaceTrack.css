@@ -1,0 +1,129 @@
+.track-root {
+  width: 100%;
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--grass-dark);
+  box-shadow: 0 0 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.06);
+  user-select: none;
+}
+
+.track-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.track-grass-outer {
+  fill: #2d5a1b;
+}
+
+.track-grass-inner {
+  fill: #3a7a22;
+}
+
+.track-surface {
+  fill: #3d3d3d;
+}
+
+.track-surface-highlight {
+  fill: none;
+  stroke: rgba(255,255,255,0.04);
+  stroke-width: 3;
+}
+
+.track-edge-white {
+  fill: none;
+  stroke: #f0ead8;
+  stroke-width: 4;
+  stroke-linecap: round;
+}
+
+.track-kerb-segment {
+  stroke-width: 6;
+  stroke-linecap: butt;
+  fill: none;
+}
+
+.track-start-box {
+  fill: none;
+}
+
+.track-finish-line {
+  stroke-width: 8;
+  stroke-linecap: butt;
+}
+
+.track-car-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.track-car-pos {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.progress-bar-wrap {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  background: rgba(0,0,0,0.5);
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+.progress-bar-lane {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.progress-bar-name {
+  font-family: var(--font-display);
+  font-size: 9px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  width: 60px;
+  flex-shrink: 0;
+}
+
+.progress-bar-name.p1 { color: var(--p1-color); }
+.progress-bar-name.p2 { color: var(--p2-color); }
+
+.progress-bar-track {
+  flex: 1;
+  height: 6px;
+  background: rgba(255,255,255,0.08);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.progress-bar-fill.p1 {
+  background: linear-gradient(90deg, var(--p1-color), var(--neon-green));
+  box-shadow: 0 0 6px var(--p1-color);
+}
+
+.progress-bar-fill.p2 {
+  background: linear-gradient(90deg, var(--p2-color), var(--neon-orange));
+  box-shadow: 0 0 6px var(--p2-color);
+}
+
+.progress-pct {
+  font-family: var(--font-display);
+  font-size: 9px;
+  width: 32px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.progress-pct.p1 { color: var(--p1-color); }
+.progress-pct.p2 { color: var(--p2-color); }

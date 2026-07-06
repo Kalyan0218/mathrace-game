@@ -1,0 +1,53 @@
+.car-sprite-root {
+  position: absolute;
+  transform-origin: center center;
+  pointer-events: none;
+  z-index: 10;
+  transition: filter 0.3s;
+}
+
+.car-sprite-root.boosting .car-glow {
+  opacity: 1;
+}
+
+.car-glow {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.25s;
+  pointer-events: none;
+}
+
+.car-glow.p1 {
+  background: radial-gradient(circle, rgba(0,200,255,0.55) 0%, transparent 70%);
+}
+
+.car-glow.p2 {
+  background: radial-gradient(circle, rgba(255,60,90,0.55) 0%, transparent 70%);
+}
+
+.car-exhaust-trail {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 3px;
+  border-radius: 2px;
+  opacity: 0;
+  transition: width 0.2s, opacity 0.2s;
+}
+
+.car-sprite-root.boosting .car-exhaust-trail {
+  width: 22px;
+  opacity: 0.8;
+}
+
+.car-exhaust-trail.p1 {
+  background: linear-gradient(to left, rgba(0,200,255,0.8), transparent);
+}
+
+.car-exhaust-trail.p2 {
+  background: linear-gradient(to left, rgba(255,60,90,0.8), transparent);
+}
