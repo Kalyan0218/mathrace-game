@@ -1,0 +1,53 @@
+*{
+
+    margin:0;
+
+    padding:0;
+
+    box-sizing:border-box;
+
+    image-rendering:pixelated;
+
+}
+
+html,
+body,
+#root{
+
+    width:100%;
+
+    height:100%;
+
+    overflow:hidden;
+
+    background:#000;
+
+    font-family:"Press Start 2P", monospace;
+
+}
+
+body{
+
+    background:
+    linear-gradient(
+
+        #58c4ff 0%,
+        #58c4ff 45%,
+        #43a733 45%,
+        #43a733 100%
+
+    );
+
+}
+
+.app{
+
+    width:100vw;
+
+    height:100vh;
+
+    display:grid;
+
+    grid-template-columns:1fr 300px;
+
+}

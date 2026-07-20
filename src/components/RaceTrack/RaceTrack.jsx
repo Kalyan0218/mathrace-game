@@ -62,6 +62,7 @@ const CENTER_PATH =
   'Q 158,413 185,420 ' +
   'Z';
 
+
 const OUTER2_PATH =
   'M 155,443 ' +
   'L 743,443 ' +
@@ -80,7 +81,20 @@ const OUTER2_PATH =
   'Q 62,374 105,412 ' +
   'Q 130,435 155,443 ' +
   'Z';
+// const ROAD_WIDTH = 90;
 
+// const CENTER_PATH = `
+// M 150 410
+// C 90 410, 70 330, 70 250
+// C 70 130, 130 70, 240 70
+// C 360 70, 430 120, 500 230
+// C 550 310, 620 330, 700 250
+// C 760 190, 840 170, 980 170
+// C 1100 170, 1160 220, 1160 320
+// C 1160 430, 1090 470, 950 470
+// L 260 470
+// C 190 470, 160 450, 150 410
+// `;
 function buildKerbPoints(pathEl, count, offset) {
   if (!pathEl) return [];
   const len = pathEl.getTotalLength();
@@ -131,6 +145,7 @@ function TrackSVG({ svgRef }) {
       ref={svgRef}
       className="track-svg"
       viewBox={`0 0 ${VW} ${VH}`}
+      preserveAspectRatio="xMidYMid meet"
       xmlns="http://www.w3.org/2000/svg"
     >
       <rect x="0" y="0" width={VW} height={VH} className="track-grass-outer" />
@@ -181,6 +196,77 @@ function TrackSVG({ svgRef }) {
       <circle cx="170" cy="320" r="9"  fill="#2d5a1b" stroke="#3a7a22" strokeWidth="2" />
       <circle cx="155" cy="310" r="7"  fill="#3a7a22" />
     </svg>
+//     <svg
+//     className="track-svg"
+//     viewBox="0 0 1250 600"
+//     preserveAspectRatio="xMidYMid meet"
+// >
+
+//     {/* Grass */}
+//     <rect
+//         width="1250"
+//         height="600"
+//         fill="#357d22"
+//     />
+
+//     {/* Outer Kerb */}
+//     <path
+//         d={CENTER_PATH}
+//         fill="none"
+//         stroke="#ff2b00"
+//         strokeWidth={ROAD_WIDTH + 16}
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//     />
+
+//     {/* White Kerb */}
+//     <path
+//         d={CENTER_PATH}
+//         fill="none"
+//         stroke="white"
+//         strokeWidth={ROAD_WIDTH + 8}
+//         strokeDasharray="18 18"
+//         strokeLinecap="round"
+//     />
+
+//     {/* Asphalt */}
+//     <path
+//         d={CENTER_PATH}
+//         fill="none"
+//         stroke="#444"
+//         strokeWidth={ROAD_WIDTH}
+//         strokeLinecap="round"
+//         strokeLinejoin="round"
+//     />
+
+//     {/* Centre Line */}
+//     <path
+//         d={CENTER_PATH}
+//         fill="none"
+//         stroke="#666"
+//         strokeWidth="3"
+//         strokeDasharray="22 22"
+//     />
+
+//     {/* Inner Kerb */}
+//     <path
+//         d={CENTER_PATH}
+//         fill="none"
+//         stroke="#ff2b00"
+//         strokeWidth={ROAD_WIDTH - 12}
+//         strokeLinecap="round"
+//     />
+
+//     <path
+//         d={CENTER_PATH}
+//         fill="none"
+//         stroke="white"
+//         strokeWidth={ROAD_WIDTH - 20}
+//         strokeDasharray="18 18"
+//         strokeLinecap="round"
+//     />
+
+// </svg>
   );
 }
 

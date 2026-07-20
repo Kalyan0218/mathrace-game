@@ -40,7 +40,7 @@ export default function Lobby({ onStart }) {
               placeholder="Player 2 name"
               maxLength={16}
             />
-          </div>
+          </div> 
         </div>
 
         <div className="lobby-divider" />

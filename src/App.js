@@ -110,15 +110,21 @@ function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
   const submitAnswer = useCallback((player, value) => {
     const correct = parseInt(value, 10) === question.answer;
     advanceCar(player, correct, question.answer);
-  }, [question.answer, advanceCar]);
+    if (correct) {
+      setLocked(true);
+      setRound(r => r + 1);
+      setTimeout(resolveRound, 950);
+    }
+  }, [question.answer, advanceCar, resolveRound]);
 
   useEffect(() => {
+    if (locked) return;
     if (p1State !== 'idle' && p2State !== 'idle') {
       setLocked(true);
       setRound(r => r + 1);
       setTimeout(resolveRound, 950);
     }
-  }, [p1State, p2State, resolveRound]);
+  }, [p1State, p2State, resolveRound, locked]);
 
   useEffect(() => {
     if (locked) { clearInterval(timerRef.current); return; }
@@ -171,12 +177,13 @@ function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
           p1Streak={p1Streak} p2Streak={p2Streak}
           round={round}
         />
-
+    <main className="game-area">
         <RaceTrack
           p1Progress={p1Progress} p2Progress={p2Progress}
           p1Name={p1Name}         p2Name={p2Name}
           p1Boosting={p1Boosting} p2Boosting={p2Boosting}
         />
+        </main>
 
         <QuestionPanel
           question={question}
