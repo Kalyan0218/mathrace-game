@@ -1,7 +1,11 @@
 export const DIFFICULTIES = {
-  easy:   { label: 'Easy',   ops: ['+', '-'],           maxN: 12 },
-  medium: { label: 'Medium', ops: ['+', '-', '×'],      maxN: 20 },
-  hard:   { label: 'Hard',   ops: ['+', '-', '×', '÷'], maxN: 30 },
+  grade1: { label: 'Grade 1', ops: ['+', '-'],           maxN: 10 },
+  grade2: { label: 'Grade 2', ops: ['+', '-'],           maxN: 20 },
+  grade3: { label: 'Grade 3', ops: ['+', '-', '×'],      maxN: 30 },
+  grade4: { label: 'Grade 4', ops: ['+', '-', '×'],      maxN: 50 },
+  grade5: { label: 'Grade 5', ops: ['+', '-', '×', '÷'], maxN: 75 },
+  grade6: { label: 'Grade 6', ops: ['+', '-', '×', '÷'], maxN: 100 },
+  grade7: { label: 'Grade 7', ops: ['+', '-', '×', '÷'], maxN: 150 },
 };
 
 export function generateQuestion(difficulty) {

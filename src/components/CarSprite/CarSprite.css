@@ -3,7 +3,11 @@
   transform-origin: center center;
   pointer-events: none;
   z-index: 10;
-  transition: filter 0.3s;
+  transition: filter 0.3s, transform 0.15s;
+}
+
+.car-sprite-root.boosting {
+  transform: scale(1.05);
 }
 
 .car-sprite-root.boosting .car-glow {
@@ -12,19 +16,19 @@
 
 .car-glow {
   position: absolute;
-  inset: -6px;
+  inset: -8px;
   border-radius: 50%;
   opacity: 0;
-  transition: opacity 0.25s;
+  transition: opacity 0.25s ease;
   pointer-events: none;
 }
 
 .car-glow.p1 {
-  background: radial-gradient(circle, rgba(0,200,255,0.55) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(37,247,255,0.55) 0%, transparent 70%);
 }
 
 .car-glow.p2 {
-  background: radial-gradient(circle, rgba(255,60,90,0.55) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,44,207,0.55) 0%, transparent 70%);
 }
 
 .car-exhaust-trail {
@@ -33,21 +37,21 @@
   right: 100%;
   transform: translateY(-50%);
   width: 0;
-  height: 3px;
-  border-radius: 2px;
+  height: 4px;
+  border-radius: 999px;
   opacity: 0;
-  transition: width 0.2s, opacity 0.2s;
+  transition: width 0.2s ease, opacity 0.2s ease;
 }
 
 .car-sprite-root.boosting .car-exhaust-trail {
-  width: 22px;
-  opacity: 0.8;
+  width: 26px;
+  opacity: 0.85;
 }
 
 .car-exhaust-trail.p1 {
-  background: linear-gradient(to left, rgba(0,200,255,0.8), transparent);
+  background: linear-gradient(to left, rgba(37,247,255,0.92), transparent);
 }
 
 .car-exhaust-trail.p2 {
-  background: linear-gradient(to left, rgba(255,60,90,0.8), transparent);
+  background: linear-gradient(to left, rgba(255,44,207,0.92), transparent);
 }

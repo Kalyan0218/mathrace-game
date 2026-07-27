@@ -5,7 +5,7 @@ import './Lobby.css';
 export default function Lobby({ onStart }) {
   const [p1, setP1]   = useState('Player 1');
   const [p2, setP2]   = useState('Player 2');
-  const [diff, setDiff] = useState('easy');
+  const [diff, setDiff] = useState('grade1');
 
   const handleStart = () => {
     onStart(p1.trim() || 'Player 1', p2.trim() || 'Player 2', diff);
@@ -50,7 +50,7 @@ export default function Lobby({ onStart }) {
           {Object.entries(DIFFICULTIES).map(([key, val]) => (
             <button
               key={key}
-              className={`diff-btn${diff === key ? ` active-${key}` : ''}`}
+              className={`diff-btn${diff === key ? ' active' : ''}`}
               onClick={() => setDiff(key)}
             >
               {val.label}
