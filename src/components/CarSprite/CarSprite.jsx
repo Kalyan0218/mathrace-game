@@ -11,6 +11,7 @@ export default function CarSprite({ isP1, boosting, size = 22, model = 'nova' })
   const h     = size * 1.8;
   const cls   = `car-sprite-root${boosting ? ' boosting' : ''}`;
   const side  = isP1 ? 'p1' : 'p2';
+
   return (
     <div className={cls} style={{ width: w, height: h, marginLeft: -w / 2, marginTop: -h / 2 }}>
       <div className={`car-glow ${side}`} />
