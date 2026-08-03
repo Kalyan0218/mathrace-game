@@ -1,14 +1,25 @@
 import { useState } from 'react';
-import { DIFFICULTIES } from '../../utils/questions';
+import { DIFFICULTIES, TOPICS } from '../../utils/questions';
 import './Lobby.css';
 
 export default function Lobby({ onStart }) {
-  const [p1, setP1]   = useState('Player 1');
-  const [p2, setP2]   = useState('Player 2');
+  const [p1, setP1] = useState('Player 1');
+  const [p2, setP2] = useState('Player 2');
   const [diff, setDiff] = useState('grade1');
+  const [topic, setTopic] = useState('random');
+
+  const availableTopics = TOPICS[diff] || [{ key: 'random', label: 'Random' }];
+
+  const handleGradeChange = (nextDiff) => {
+    setDiff(nextDiff);
+    const nextTopics = TOPICS[nextDiff] || [{ key: 'random', label: 'Random' }];
+    if (!nextTopics.some(item => item.key === topic)) {
+      setTopic(nextTopics[0]?.key || 'random');
+    }
+  };
 
   const handleStart = () => {
-    onStart(p1.trim() || 'Player 1', p2.trim() || 'Player 2', diff);
+    onStart(p1.trim() || 'Player 1', p2.trim() || 'Player 2', diff, topic);
   };
 
   return (
@@ -40,7 +51,7 @@ export default function Lobby({ onStart }) {
               placeholder="Player 2 name"
               maxLength={16}
             />
-          </div> 
+          </div>
         </div>
 
         <div className="lobby-divider" />
@@ -51,9 +62,22 @@ export default function Lobby({ onStart }) {
             <button
               key={key}
               className={`diff-btn${diff === key ? ' active' : ''}`}
-              onClick={() => setDiff(key)}
+              onClick={() => handleGradeChange(key)}
             >
               {val.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="lobby-section-label">Topic</div>
+        <div className="topic-row">
+          {availableTopics.map(item => (
+            <button
+              key={item.key}
+              className={`topic-btn${topic === item.key ? ' active' : ''}`}
+              onClick={() => setTopic(item.key)}
+            >
+              {item.label}
             </button>
           ))}
         </div>

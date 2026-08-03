@@ -8,7 +8,7 @@ import QuestionPanel from './components/QuestionPanel/QuestionPanel';
 import ResultScreen  from './components/ResultScreen/ResultScreen';
 import { generateQuestion, QUESTION_TIME, ADVANCE_AMOUNT, WIN_PROGRESS } from './utils/questions';
 
-function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
+function GameScreen({ p1Name, p2Name, difficulty, topic, onEnd, onMenu }) {
   const [p1Progress, setP1Progress] = useState(0.01);
   const [p2Progress, setP2Progress] = useState(0.01);
   const [p1Score,    setP1Score]    = useState(0);
@@ -17,7 +17,7 @@ function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
   const [p2Streak,   setP2Streak]   = useState(0);
   const [p1Boosting, setP1Boosting] = useState(false);
   const [p2Boosting, setP2Boosting] = useState(false);
-  const [question,   setQuestion]   = useState(() => generateQuestion(difficulty));
+  const [question,   setQuestion]   = useState(() => generateQuestion(difficulty, topic));
   const [p1Answer,   setP1Answer]   = useState('');
   const [p2Answer,   setP2Answer]   = useState('');
   const [p1State,    setP1State]    = useState('idle');
@@ -45,7 +45,7 @@ function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
   roundRef.current = round;
 
   const nextQuestion = useCallback(() => {
-    setQuestion(generateQuestion(difficulty));
+    setQuestion(generateQuestion(difficulty, topic));
     setP1Answer('');
     setP2Answer('');
     setP1State('idle');
@@ -53,7 +53,7 @@ function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
     setFeedback({ p1: '', p2: '' });
     setTimeLeft(QUESTION_TIME);
     setLocked(false);
-  }, [difficulty]);
+  }, [difficulty, topic]);
 
   const triggerBoost = useCallback((player) => {
     if (player === 1) {
@@ -150,7 +150,7 @@ function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
       });
     }, 1000);
     return () => clearInterval(timerRef.current);
-  }, [question.id, locked]);
+  }, [question, question.id, locked]);
 
   const handleP1Change  = useCallback(e => { if (p1State === 'idle') setP1Answer(e.target.value); }, [p1State]);
   const handleP2Change  = useCallback(e => { if (p2State === 'idle') setP2Answer(e.target.value); }, [p2State]);
@@ -207,8 +207,8 @@ export default function App() {
   const [result, setResult] = useState(null);
   const rematchKey = useRef(0);
 
-  const handleStart = (p1, p2, diff) => {
-    setConfig({ p1, p2, diff });
+  const handleStart = (p1, p2, diff, selectedTopic) => {
+    setConfig({ p1, p2, diff, topic: selectedTopic });
     setScreen('game');
   };
 
@@ -239,6 +239,7 @@ export default function App() {
           p1Name={config.p1}
           p2Name={config.p2}
           difficulty={config.diff}
+          topic={config.topic}
           onEnd={handleEnd}
           onMenu={handleMenu}
         />

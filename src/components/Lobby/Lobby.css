@@ -114,7 +114,7 @@
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
 }
 
 .diff-btn {
@@ -145,9 +145,47 @@
   box-shadow: 0 0 14px rgba(255,235,77,0.22);
 }
 
+.topic-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.topic-btn {
+  padding: 12px 10px;
+  border-radius: 14px;
+  border: 2px solid rgba(255,255,255,0.12);
+  background: rgba(0,0,0,0.25);
+  color: var(--text-dim);
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.topic-btn:hover:not(.active) {
+  border-color: rgba(255,255,255,0.28);
+  color: var(--text-primary);
+}
+
+.topic-btn.active {
+  border-color: var(--neon-cyan);
+  color: var(--neon-cyan);
+  background: rgba(37,247,255,0.12);
+  box-shadow: 0 0 14px rgba(37,247,255,0.18);
+}
+
 @media (max-width: 460px) {
   .difficulty-row {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .topic-row {
+    grid-template-columns: 1fr;
   }
 }
 
