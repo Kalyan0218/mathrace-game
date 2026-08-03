@@ -150,7 +150,7 @@ function GameScreen({ p1Name, p2Name, difficulty, onEnd, onMenu }) {
       });
     }, 1000);
     return () => clearInterval(timerRef.current);
-  }, [question.id, locked]);
+  }, [question, locked]);
 
   const handleP1Change  = useCallback(e => { if (p1State === 'idle') setP1Answer(e.target.value); }, [p1State]);
   const handleP2Change  = useCallback(e => { if (p2State === 'idle') setP2Answer(e.target.value); }, [p2State]);
