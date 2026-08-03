@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import './globals.css';
 import './App.css';
 import Lobby         from './components/Lobby/Lobby';
+import Garage        from './components/Garage/Garage';
 import RaceTrack     from './components/RaceTrack/RaceTrack';
 import Scoreboard    from './components/Scoreboard/Scoreboard';
 import QuestionPanel from './components/QuestionPanel/QuestionPanel';
@@ -9,6 +10,7 @@ import ResultScreen  from './components/ResultScreen/ResultScreen';
 import { generateQuestion, QUESTION_TIME, ADVANCE_AMOUNT, WIN_PROGRESS } from './utils/questions';
 
 function GameScreen({ p1Name, p2Name, difficulty, topic, onEnd, onMenu }) {
+function GameScreen({ p1Name, p2Name, difficulty, track, p1Car, p2Car, onEnd, onMenu }) {
   const [p1Progress, setP1Progress] = useState(0.01);
   const [p2Progress, setP2Progress] = useState(0.01);
   const [p1Score,    setP1Score]    = useState(0);
@@ -151,6 +153,7 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, onEnd, onMenu }) {
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, [question, question.id, locked]);
+  }, [question, locked]);
 
   const handleP1Change  = useCallback(e => { if (p1State === 'idle') setP1Answer(e.target.value); }, [p1State]);
   const handleP2Change  = useCallback(e => { if (p2State === 'idle') setP2Answer(e.target.value); }, [p2State]);
@@ -182,6 +185,7 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, onEnd, onMenu }) {
           p1Progress={p1Progress} p2Progress={p2Progress}
           p1Name={p1Name}         p2Name={p2Name}
           p1Boosting={p1Boosting} p2Boosting={p2Boosting}
+          track={track} p1Car={p1Car} p2Car={p2Car}
         />
         </main>
 
@@ -209,6 +213,13 @@ export default function App() {
 
   const handleStart = (p1, p2, diff, selectedTopic) => {
     setConfig({ p1, p2, diff, topic: selectedTopic });
+  const handleStart = (p1, p2, diff) => {
+    setConfig({ p1, p2, diff });
+    setScreen('garage');
+  };
+
+  const handleGarageStart = setup => {
+    setConfig(current => ({ ...current, ...setup }));
     setScreen('game');
   };
 
@@ -232,6 +243,7 @@ export default function App() {
   return (
     <>
       {screen === 'lobby' && <Lobby onStart={handleStart} />}
+      {screen === 'garage' && config && <Garage p1Name={config.p1} p2Name={config.p2} onBack={() => setScreen('lobby')} onStart={handleGarageStart} />}
 
       {screen === 'game' && config && (
         <GameScreen
@@ -240,6 +252,7 @@ export default function App() {
           p2Name={config.p2}
           difficulty={config.diff}
           topic={config.topic}
+          track={config.track} p1Car={config.p1Car} p2Car={config.p2Car}
           onEnd={handleEnd}
           onMenu={handleMenu}
         />

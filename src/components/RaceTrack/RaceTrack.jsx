@@ -7,7 +7,7 @@ const VH = 520;
 
 // A single closed centreline prevents the two sides of the track from crossing
 // over one another in the chicane.
-const CENTER_PATH =
+const CLASSIC_PATH =
   'M 160,420 ' +
   'L 730,420 ' +
   'C 800,420 845,390 845,325 ' +
@@ -19,6 +19,12 @@ const CENTER_PATH =
   'C 350,152 300,105 225,105 ' +
   'C 130,105 60,165 60,265 ' +
   'C 60,350 95,395 160,420 Z';
+
+const TRACKS = {
+  classic: { path: CLASSIC_PATH, ground: '#1f5f26', kerb: '#cc2200', name: 'Neon Circuit', finish: { x: 205, y: 382 } },
+  canyon: { path: 'M 135,405 C 65,365 70,195 150,130 C 235,62 385,105 445,170 C 510,241 545,218 615,145 C 690,68 835,115 845,245 C 855,375 760,430 635,405 C 510,380 430,405 320,425 C 235,442 178,435 135,405 Z', ground: '#75431d', kerb: '#f3a24a', name: 'Canyon Run', finish: { x: 183, y: 369 } },
+  metro: { path: 'M 145,410 L 735,410 Q 835,410 835,310 L 835,195 Q 835,105 730,105 L 185,105 Q 70,105 70,215 L 70,315 Q 70,410 145,410 Z', ground: '#151845', kerb: '#8c75ef', name: 'Metro Loop', finish: { x: 205, y: 372 } },
+};
 
 const ROAD_WIDTH = 76;
 const LANE_OFFSET = 18;
@@ -38,7 +44,9 @@ const LANE_OFFSET = 18;
 
 
 
-function TrackSVG({ svgRef }) {
+function TrackSVG({ svgRef, track }) {
+  const selected = TRACKS[track] || TRACKS.classic;
+  const { path, ground, kerb, name, finish } = selected;
   return (
     <svg
       ref={svgRef}
@@ -53,16 +61,16 @@ function TrackSVG({ svgRef }) {
           <path d="M 0,0 H 5 V 5 H 0 Z M 5,5 H 10 V 10 H 5 Z" fill="#171020" />
         </pattern>
       </defs>
-      <rect x="0" y="0" width={VW} height={VH} className="track-grass-outer" />
+      <rect x="0" y="0" width={VW} height={VH} className="track-grass-outer" style={{ fill: ground }} />
 
      
-      <path d={CENTER_PATH} fill="none" stroke="#cc2200" strokeWidth={ROAD_WIDTH + 12} strokeLinecap="round" strokeLinejoin="round" />
-      <path d={CENTER_PATH} fill="none" stroke="#f5f5f5" strokeWidth={ROAD_WIDTH + 6} strokeDasharray="14 14" strokeLinecap="butt" strokeLinejoin="round" />
-      <path d={CENTER_PATH} fill="none" stroke="#3d3d3d" strokeWidth={ROAD_WIDTH} strokeLinecap="round" strokeLinejoin="round" />
-      <path d={CENTER_PATH} fill="none" stroke="rgba(255,255,255,0.11)" strokeWidth="2" strokeDasharray="18 14" />
+      <path d={path} fill="none" stroke={kerb} strokeWidth={ROAD_WIDTH + 12} strokeLinecap="round" strokeLinejoin="round" />
+      <path d={path} fill="none" stroke="#f5f5f5" strokeWidth={ROAD_WIDTH + 6} strokeDasharray="14 14" strokeLinecap="butt" strokeLinejoin="round" />
+      <path d={path} fill="none" stroke="#3d3d3d" strokeWidth={ROAD_WIDTH} strokeLinecap="round" strokeLinejoin="round" />
+      <path d={path} fill="none" stroke="rgba(255,255,255,0.11)" strokeWidth="2" strokeDasharray="18 14" />
 
-      <rect x="205" y="382" width="10" height={ROAD_WIDTH} fill="url(#finish-checkers)" />
-      <text x="210" y="370" textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="9" fontFamily="monospace" letterSpacing="1">START / FINISH</text>
+      <rect x={finish.x} y={finish.y} width="10" height={ROAD_WIDTH} fill="url(#finish-checkers)" />
+      <text x={finish.x + 5} y={finish.y - 12} textAnchor="middle" fill="rgba(255,255,255,0.75)" fontSize="9" fontFamily="monospace" letterSpacing="1">{name.toUpperCase()}</text>
 
       
 
@@ -158,6 +166,9 @@ export default function RaceTrack({
   p2Name,
   p1Boosting,
   p2Boosting,
+  track = 'classic',
+  p1Car = 'nova',
+  p2Car = 'nova',
 }) {
   const svgRef      = useRef(null);
   const pathRef     = useRef(null);
@@ -176,12 +187,12 @@ export default function RaceTrack({
     if (pathRef.current) return pathRef.current;
     if (!svgRef.current) return null;
     const el = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-    el.setAttribute('d', CENTER_PATH);
+    el.setAttribute('d', (TRACKS[track] || TRACKS.classic).path);
     el.style.visibility = 'hidden';
     svgRef.current.appendChild(el);
     pathRef.current = el;
     return el;
-  }, []);
+  }, [track]);
 
   const placeCar = useCallback((carEl, progress, laneOffset) => {
     const p = getPathEl();
@@ -228,13 +239,13 @@ export default function RaceTrack({
   return (
     <div className="track-root">
       <div style={{ position: 'relative' }}>
-        <TrackSVG svgRef={svgRef} />
+        <TrackSVG svgRef={svgRef} track={track} />
         <div className="track-car-layer">
           <div ref={p1CarRef} className="track-car-pos">
-            <CarSprite isP1={true}  boosting={p1Boosting} size={20} />
+            <CarSprite isP1={true}  boosting={p1Boosting} model={p1Car} size={20} />
           </div>
           <div ref={p2CarRef} className="track-car-pos">
-            <CarSprite isP1={false} boosting={p2Boosting} size={20} />
+            <CarSprite isP1={false} boosting={p2Boosting} model={p2Car} size={20} />
           </div>
         </div>
       </div>

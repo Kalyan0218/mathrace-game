@@ -87,7 +87,7 @@ export default function Lobby({ onStart }) {
           onClick={handleStart}
           disabled={!p1.trim() || !p2.trim()}
         >
-          Start Race
+          Continue to garage →
         </button>
       </div>
     </div>
