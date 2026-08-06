@@ -9,8 +9,7 @@ import QuestionPanel from './components/QuestionPanel/QuestionPanel';
 import ResultScreen  from './components/ResultScreen/ResultScreen';
 import { generateQuestion, QUESTION_TIME, ADVANCE_AMOUNT, WIN_PROGRESS } from './utils/questions';
 
-function GameScreen({ p1Name, p2Name, difficulty, topic, onEnd, onMenu }) {
-function GameScreen({ p1Name, p2Name, difficulty, track, p1Car, p2Car, onEnd, onMenu }) {
+function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, onEnd, onMenu }) {
   const [p1Progress, setP1Progress] = useState(0.01);
   const [p2Progress, setP2Progress] = useState(0.01);
   const [p1Score,    setP1Score]    = useState(0);
@@ -153,7 +152,6 @@ function GameScreen({ p1Name, p2Name, difficulty, track, p1Car, p2Car, onEnd, on
     }, 1000);
     return () => clearInterval(timerRef.current);
   }, [question, question.id, locked]);
-  }, [question, locked]);
 
   const handleP1Change  = useCallback(e => { if (p1State === 'idle') setP1Answer(e.target.value); }, [p1State]);
   const handleP2Change  = useCallback(e => { if (p2State === 'idle') setP2Answer(e.target.value); }, [p2State]);
@@ -213,8 +211,6 @@ export default function App() {
 
   const handleStart = (p1, p2, diff, selectedTopic) => {
     setConfig({ p1, p2, diff, topic: selectedTopic });
-  const handleStart = (p1, p2, diff) => {
-    setConfig({ p1, p2, diff });
     setScreen('garage');
   };
 
