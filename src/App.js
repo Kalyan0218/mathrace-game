@@ -33,6 +33,7 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
   const [locked,     setLocked]     = useState(false);
   const [roomReady,  setRoomReady]  = useState(false);
   const processedSubmissionRef = useRef(new Set());
+  const roomQuestionId = String(question.id).replace(/\./g, '_');
 
   const timerRef  = useRef(null);
   const p1PosRef  = useRef(0.01);
@@ -135,14 +136,14 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
   useEffect(() => {
     if (!roomReady) return;
     const state = {
-      p1Name, p2Name, questionId: String(question.id), questionText: `${question.text} = ?`, answer: question.answer,
+      p1Name, p2Name, questionId: roomQuestionId, questionText: `${question.text} = ?`, answer: question.answer,
       timeLeft, p1State, p2State, locked, p1Progress, p2Progress, p1Score, p2Score,
     };
     fetch(`/api/games?code=${encodeURIComponent(roomCode)}`, {
       method: 'PATCH', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ hostKey, state }),
     }).catch(() => {});
-  }, [roomReady, roomCode, hostKey, p1Name, p2Name, question, timeLeft, p1State, p2State, locked, p1Progress, p2Progress, p1Score, p2Score]);
+  }, [roomReady, roomCode, hostKey, p1Name, p2Name, question, roomQuestionId, timeLeft, p1State, p2State, locked, p1Progress, p2Progress, p1Score, p2Score]);
 
   useEffect(() => {
     if (!roomReady) return undefined;
@@ -151,10 +152,10 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
       try {
         const response = await fetch(`/api/games?code=${encodeURIComponent(roomCode)}`);
         const payload = await response.json();
-        const entries = payload?.game?.submissions?.[String(question.id)] || {};
+        const entries = payload?.game?.submissions?.[roomQuestionId] || {};
         [1, 2].forEach(player => {
           const submission = entries[player];
-          const key = `${question.id}-${player}-${submission?.submittedAt}`;
+          const key = `${roomQuestionId}-${player}-${submission?.submittedAt}`;
           if (submission && !processedSubmissionRef.current.has(key)) {
             processedSubmissionRef.current.add(key);
             if (player === 1) setP1Answer(submission.answer);
@@ -167,7 +168,7 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
     const interval = setInterval(() => { if (active) checkAnswers(); }, 450);
     checkAnswers();
     return () => { active = false; clearInterval(interval); };
-  }, [roomReady, roomCode, question.id, submitAnswer]);
+  }, [roomReady, roomCode, roomQuestionId, submitAnswer]);
 
   useEffect(() => {
     if (locked) return;
