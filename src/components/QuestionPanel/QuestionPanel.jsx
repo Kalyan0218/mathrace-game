@@ -37,6 +37,7 @@ export default function QuestionPanel({
   onP1Change, onP2Change,
   onP1KeyDown, onP2KeyDown,
   phoneCode,
+  phoneJoinUrl,
 }) {
   const p1Ref = useRef(null);
   const p2Ref = useRef(null);
@@ -59,7 +60,8 @@ export default function QuestionPanel({
 
         <div className="answer-form">
           {phoneCode && <div className="phone-room-display">
-            <span>On your phone, add ?join={phoneCode} to this game's web address</span>
+            {phoneJoinUrl && <img className="phone-room-qr" src={`https://api.qrserver.com/v1/create-qr-code/?size=160x160&margin=0&data=${encodeURIComponent(phoneJoinUrl)}`} alt={`Scan to join room ${phoneCode}`} />}
+            <span>Scan to join this race on your phone</span>
             <strong>ROOM {phoneCode}</strong>
           </div>}
           <div className="answer-inputs">

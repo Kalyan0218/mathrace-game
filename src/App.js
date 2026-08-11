@@ -14,6 +14,7 @@ import { generateQuestion, QUESTION_TIME, ADVANCE_AMOUNT, WIN_PROGRESS } from '.
 function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, onEnd, onMenu }) {
   const roomCode = useRef(Math.random().toString(36).slice(2, 8).toUpperCase()).current;
   const hostKey = useRef(`${Date.now()}-${Math.random().toString(36).slice(2)}`).current;
+  const phoneJoinUrl = `${window.location.origin}${window.location.pathname}?join=${roomCode}`;
   const [p1Progress, setP1Progress] = useState(0.01);
   const [p2Progress, setP2Progress] = useState(0.01);
   const [p1Score,    setP1Score]    = useState(0);
@@ -250,6 +251,7 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
           onP1Change={handleP1Change}   onP2Change={handleP2Change}
           onP1KeyDown={handleP1KeyDown} onP2KeyDown={handleP2KeyDown}
           phoneCode={roomCode}
+          phoneJoinUrl={phoneJoinUrl}
         />
       </div>
     </div>

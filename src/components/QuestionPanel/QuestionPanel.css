@@ -97,6 +97,16 @@
 
 .phone-room-display strong { color: var(--neon-cyan); font-family: var(--font-display); font-size: 11px; }
 
+.phone-room-qr {
+  width: 112px;
+  height: 112px;
+  align-self: center;
+  padding: 5px;
+  border-radius: 6px;
+  background: #fff;
+  image-rendering: pixelated;
+}
+
 .answer-inputs {
   display: flex;
   flex-direction: column;
