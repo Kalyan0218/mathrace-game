@@ -208,3 +208,6 @@
 .start-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,247,255,0.36); }
 .start-btn:active:not(:disabled) { transform: translateY(0); }
 .start-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.leaderboard-btn { width: 100%; margin-top: 14px; padding: 13px; border: 2px solid rgba(37,247,255,.4); border-radius: 16px; background: rgba(37,247,255,.06); color: var(--neon-cyan); font-family: var(--font-display); font-size: 10px; letter-spacing: .15em; text-transform: uppercase; }
+.leaderboard-btn:hover { background: rgba(37,247,255,.14); }

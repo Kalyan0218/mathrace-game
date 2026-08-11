@@ -7,9 +7,13 @@ import RaceTrack     from './components/RaceTrack/RaceTrack';
 import Scoreboard    from './components/Scoreboard/Scoreboard';
 import QuestionPanel from './components/QuestionPanel/QuestionPanel';
 import ResultScreen  from './components/ResultScreen/ResultScreen';
+import Leaderboard   from './components/Leaderboard/Leaderboard';
+import PhoneController from './components/PhoneController/PhoneController';
 import { generateQuestion, QUESTION_TIME, ADVANCE_AMOUNT, WIN_PROGRESS } from './utils/questions';
 
 function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, onEnd, onMenu }) {
+  const roomCode = useRef(Math.random().toString(36).slice(2, 8).toUpperCase()).current;
+  const hostKey = useRef(`${Date.now()}-${Math.random().toString(36).slice(2)}`).current;
   const [p1Progress, setP1Progress] = useState(0.01);
   const [p2Progress, setP2Progress] = useState(0.01);
   const [p1Score,    setP1Score]    = useState(0);
@@ -27,6 +31,8 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
   const [round,      setRound]      = useState(1);
   const [feedback,   setFeedback]   = useState({ p1: '', p2: '' });
   const [locked,     setLocked]     = useState(false);
+  const [roomReady,  setRoomReady]  = useState(false);
+  const processedSubmissionRef = useRef(new Set());
 
   const timerRef  = useRef(null);
   const p1PosRef  = useRef(0.01);
@@ -109,14 +115,59 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
   }, [triggerBoost]);
 
   const submitAnswer = useCallback((player, value) => {
-    const correct = parseInt(value, 10) === question.answer;
+    if (locked || (player === 1 ? p1State !== 'idle' : p2State !== 'idle')) return;
+    const correct = Number(value) === question.answer;
     advanceCar(player, correct, question.answer);
     if (correct) {
       setLocked(true);
       setRound(r => r + 1);
       setTimeout(resolveRound, 950);
     }
-  }, [question.answer, advanceCar, resolveRound]);
+  }, [question.answer, advanceCar, resolveRound, locked, p1State, p2State]);
+
+  useEffect(() => {
+    fetch('/api/games', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action: 'create', code: roomCode, hostKey }),
+    }).then(response => { if (response.ok) setRoomReady(true); }).catch(() => {});
+  }, [roomCode, hostKey]);
+
+  useEffect(() => {
+    if (!roomReady) return;
+    const state = {
+      p1Name, p2Name, questionId: String(question.id), questionText: `${question.text} = ?`, answer: question.answer,
+      timeLeft, p1State, p2State, locked, p1Progress, p2Progress, p1Score, p2Score,
+    };
+    fetch(`/api/games?code=${encodeURIComponent(roomCode)}`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ hostKey, state }),
+    }).catch(() => {});
+  }, [roomReady, roomCode, hostKey, p1Name, p2Name, question, timeLeft, p1State, p2State, locked, p1Progress, p2Progress, p1Score, p2Score]);
+
+  useEffect(() => {
+    if (!roomReady) return undefined;
+    let active = true;
+    const checkAnswers = async () => {
+      try {
+        const response = await fetch(`/api/games?code=${encodeURIComponent(roomCode)}`);
+        const payload = await response.json();
+        const entries = payload?.game?.submissions?.[String(question.id)] || {};
+        [1, 2].forEach(player => {
+          const submission = entries[player];
+          const key = `${question.id}-${player}-${submission?.submittedAt}`;
+          if (submission && !processedSubmissionRef.current.has(key)) {
+            processedSubmissionRef.current.add(key);
+            if (player === 1) setP1Answer(submission.answer);
+            else setP2Answer(submission.answer);
+            submitAnswer(player, submission.answer);
+          }
+        });
+      } catch (_) {}
+    };
+    const interval = setInterval(() => { if (active) checkAnswers(); }, 450);
+    checkAnswers();
+    return () => { active = false; clearInterval(interval); };
+  }, [roomReady, roomCode, question.id, submitAnswer]);
 
   useEffect(() => {
     if (locked) return;
@@ -197,6 +248,7 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
           feedback={feedback}
           onP1Change={handleP1Change}   onP2Change={handleP2Change}
           onP1KeyDown={handleP1KeyDown} onP2KeyDown={handleP2KeyDown}
+          phoneCode={roomCode}
         />
       </div>
     </div>
@@ -204,6 +256,7 @@ function GameScreen({ p1Name, p2Name, difficulty, topic, track, p1Car, p2Car, on
 }
 
 export default function App() {
+  const joinCode = new URLSearchParams(window.location.search).get('join')?.toUpperCase();
   const [screen, setScreen] = useState('lobby');
   const [config, setConfig] = useState(null);
   const [result, setResult] = useState(null);
@@ -222,6 +275,14 @@ export default function App() {
   const handleEnd = (winner, p1Score, p2Score, rounds) => {
     setResult({ winner, p1Score, p2Score, rounds });
     setScreen('result');
+    fetch('/api/scores', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ players: [
+        { name: config.p1, score: p1Score, won: winner === 1 },
+        { name: config.p2, score: p2Score, won: winner === 2 },
+      ] }),
+    }).catch(() => {});
   };
 
   const handleRematch = () => {
@@ -236,9 +297,12 @@ export default function App() {
     setScreen('lobby');
   };
 
+  if (joinCode) return <PhoneController code={joinCode} />;
+
   return (
     <>
-      {screen === 'lobby' && <Lobby onStart={handleStart} />}
+      {screen === 'lobby' && <Lobby onStart={handleStart} onLeaderboard={() => setScreen('leaderboard')} />}
+      {screen === 'leaderboard' && <Leaderboard onBack={() => setScreen('lobby')} />}
       {screen === 'garage' && config && <Garage p1Name={config.p1} p2Name={config.p2} onBack={() => setScreen('lobby')} onStart={handleGarageStart} />}
 
       {screen === 'game' && config && (

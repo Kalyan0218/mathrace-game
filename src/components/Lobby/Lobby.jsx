@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DIFFICULTIES, TOPICS } from '../../utils/questions';
 import './Lobby.css';
 
-export default function Lobby({ onStart }) {
+export default function Lobby({ onStart, onLeaderboard }) {
   const [p1, setP1] = useState('Player 1');
   const [p2, setP2] = useState('Player 2');
   const [diff, setDiff] = useState('grade1');
@@ -89,6 +89,7 @@ export default function Lobby({ onStart }) {
         >
           Continue to garage →
         </button>
+        <button className="leaderboard-btn" onClick={onLeaderboard}>View leaderboard</button>
       </div>
     </div>
   );

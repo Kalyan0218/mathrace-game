@@ -36,6 +36,7 @@ export default function QuestionPanel({
   feedback,
   onP1Change, onP2Change,
   onP1KeyDown, onP2KeyDown,
+  phoneCode,
 }) {
   const p1Ref = useRef(null);
   const p2Ref = useRef(null);
@@ -57,6 +58,10 @@ export default function QuestionPanel({
         </div>
 
         <div className="answer-form">
+          {phoneCode && <div className="phone-room-display">
+            <span>On your phone, add ?join={phoneCode} to this game's web address</span>
+            <strong>ROOM {phoneCode}</strong>
+          </div>}
           <div className="answer-inputs">
             <div className="answer-row">
               <div className="answer-dot p1" />
